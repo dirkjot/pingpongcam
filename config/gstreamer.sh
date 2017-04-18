@@ -15,4 +15,4 @@ gst-launch-1.0 \
            mpegtsmux ! hlssink max-files=5 async-handling=true target-duration=5   \
     avfvideosrc device-index=${boardcam} !  video/x-raw , width=800 !  mix.   \
     avfvideosrc device-index=${scenecama} !  videoscale method=0 ! video/x-raw, width=160, height=120 ! mix.  \
-    avfvideosrc device-index=${scenecamb} !  video/x-raw, width=160, height=120 ! mix.
+    avfvideosrc device-index=${scenecamb} !  videoscale method=0 ! video/x-raw, width=160, height=120 ! mix.
