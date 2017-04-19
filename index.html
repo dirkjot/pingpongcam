@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Welcome to nginx!</title>
+<title>PingPongCam</title>
 <style>
     body {
         width: 35em;
@@ -11,7 +11,7 @@
 </style>
 </head>
 <body>
-<h1>Welcome to Ping Pong Cam</h1>
+<h1>Santa Monica Ping Pong Cam</h1>
 
 
 <script src="hlsjs/hls.light.min.js"></script>
@@ -25,6 +25,9 @@
     hls.on(Hls.Events.MANIFEST_PARSED,function() {
       video.play();
   });
+ } 
+ else { 
+   console.log('HLS not supported '); 
  }
 </script>
 
