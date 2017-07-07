@@ -10,7 +10,7 @@ echo "Playing streams:  boardcam=$boardcam,  scene A=$scenecama,  scene B=$scene
 rm -f playlist.m3u8 segment000*.ts
 
 gst-launch-1.0 \
-    videomixer name=mix sink_0::alpha=1  sink_1::ypos=460 sink_1::xpos=620   sink_2::ypos=320 sink_2::xpos=620 !   \
+    videomixer name=mix sink_0::alpha=1  sink_1::ypos=450 sink_1::xpos=620   sink_2::ypos=450 sink_2::xpos=440 !   \
            videoconvert ! clockoverlay halignment=right valignment=top ! \
            x264enc tune=zerolatency  ! \
            mpegtsmux ! hlssink max-files=5 async-handling=true target-duration=5   \

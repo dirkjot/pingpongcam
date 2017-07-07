@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="refresh" content="600" />
 <title>PingPongCam</title>
 <style>
     body {
         margin: 0 auto;
         font-family: Tahoma, Verdana, Arial, sans-serif;
+	background-color: #2A271F;;
     }
     video {
         width: 100%;
@@ -20,7 +23,7 @@
   if(Hls.isSupported()) {
     var video = document.getElementById('video');
     var hls = new Hls();
-    hls.loadSource('http://warroom.local/playlist.m3u8');
+    hls.loadSource('http://pingpong.local/playlist.m3u8');
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED,function() {
       video.play();
