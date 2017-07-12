@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>Label</key>
+   <string>io.pivotal.pingpong</string>
+   <key>Program</key>
+   <string>/usr/local/var/www/config/gstreamer.sh</string>
+   <key>UserName</key><string>pivotal</string> 
+   <key>WorkingDirectory</key><string>/usr/local/var/www</string>
+   <key>KeepAlive</key>
+      <true/>
+   <key>RunAtLoad</key>
+        <true/>    
+    <key>StandardOutPath</key>
+    <string>/var/log/gstreamer.plist.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/gstreamer.plist.err.log</string>
+</dict>
+</plist>
+
+

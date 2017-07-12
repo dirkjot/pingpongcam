@@ -1,13 +1,25 @@
 #!/bin/bash 
+export PATH=$PATH:/usr/local/bin
+
+cd /usr/local/var/www
 
 
-boardcam=${1:-1}
+cleanup () {
+  rm -f playlist.m3u8 segment*.ts
+  echo "Cleanup done"
+}
+
+cleanup
+
+trap cleanup EXIT HUP INT QUIT PIPE TERM
+
+boardcam=${1:-2}
 scenecama=${2:-0}
-scenecamb=${3:-2}
+scenecamb=${3:-1}
 
 echo "Playing streams:  boardcam=$boardcam,  scene A=$scenecama,  scene B=$scenecamb"
 
-rm -f playlist.m3u8 segment000*.ts
+
 
 gst-launch-1.0 \
     videomixer name=mix sink_0::alpha=1  sink_1::ypos=450 sink_1::xpos=620   sink_2::ypos=450 sink_2::xpos=440 !   \
