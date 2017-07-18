@@ -4,3 +4,4 @@ segment*ts
 playlist.m3u8
 node_modules/
 tt
+startup.time.txt

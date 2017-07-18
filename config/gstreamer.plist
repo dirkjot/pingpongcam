@@ -13,9 +13,9 @@
    <key>RunAtLoad</key>
         <true/>    
     <key>StandardOutPath</key>
-    <string>/var/log/gstreamer.plist.out.log</string>
+    <string>/Users/pivotal/logs/gstreamer.plist.out</string>
     <key>StandardErrorPath</key>
-    <string>/var/log/gstreamer.plist.err.log</string>
+    <string>/Users/pivotal/logs/gstreamer.plist.err</string>
 </dict>
 </plist>
 
