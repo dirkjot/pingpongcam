@@ -3,6 +3,7 @@ export PATH=$PATH:/usr/local/bin
 
 cd /usr/local/var/www
 
+date > "startup.time.txt"
 
 cleanup () {
   rm -f playlist.m3u8 segment*.ts
@@ -26,6 +27,6 @@ gst-launch-1.0 \
            videoconvert ! clockoverlay halignment=right valignment=top ! \
            x264enc tune=zerolatency  ! \
            mpegtsmux ! hlssink max-files=5 async-handling=true target-duration=5   \
-    avfvideosrc device-index=${boardcam} !  videorate ! video/x-raw , width=800, framerate=1/1 ! videoflip method=2 !  mix.   \
+    avfvideosrc device-index=${boardcam} !  videorate ! video/x-raw , width=800, framerate=1/1 !  mix.   \
     avfvideosrc device-index=${scenecama} !  videorate ! videoscale method=0 ! video/x-raw, width=160, height=120, framerate=5/1 ! mix.  \
     avfvideosrc device-index=${scenecamb} !  videorate ! videoscale method=0 ! video/x-raw, width=160, height=120, framerate=5/1 ! mix.
