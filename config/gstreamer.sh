@@ -27,6 +27,10 @@ gst-launch-1.0 \
            videoconvert ! clockoverlay halignment=right valignment=top ! \
            x264enc tune=zerolatency  ! \
            mpegtsmux ! hlssink max-files=5 async-handling=true target-duration=5   \
-    avfvideosrc device-index=${boardcam} !  videorate ! video/x-raw , width=800, framerate=1/1 !  mix.   \
+    avfvideosrc device-index=${boardcam} !  videorate ! video/x-raw , width=800, framerate=1/1 ! tee name=t ! queue ! mix.   \
     avfvideosrc device-index=${scenecama} !  videorate ! videoscale method=0 ! video/x-raw, width=160, height=120, framerate=5/1 ! mix.  \
-    avfvideosrc device-index=${scenecamb} !  videorate ! videoscale method=0 ! video/x-raw, width=160, height=120, framerate=5/1 ! mix.
+    avfvideosrc device-index=${scenecamb} !  videorate ! videoscale method=0 ! video/x-raw, width=160, height=120, framerate=5/1 ! mix.  \
+    \
+    t.  ! videorate ! videoconvert !  video/x-raw , format=RGB , framerate=1/30 !  pngenc  !  multifilesink location="stills/frame%000d.png"
+    
+    #jpegenc ! filesink location=board-latest.jpg

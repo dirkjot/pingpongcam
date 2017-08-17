@@ -56,16 +56,17 @@ cv2.imshow('prev', bluewhite)
 
 #http://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/
 
- In [8]: img = cv2.cvtColor(bluewhite, cv2.COLOR_BGR2GRAY)
+img = cv2.cvtColor(bluewhite, cv2.COLOR_BGR2GRAY)
 
- In [9]: img = cv2.GaussianBlur(img, (5,5), 0)
-
-
-In [10]: img = cv2.threshold(img, 60, 255, cv2.THRESH_BINARY)[1]
+img = cv2.GaussianBlur(img, (5,5), 0)
 
 
- img = cv2.bitwise_not(img)  # contours expects white image on black bg
+img = cv2.threshold(img, 60, 255, cv2.THRESH_BINARY)[1]
 
+
+img = cv2.bitwise_not(img)  # contours expects white image on black bg
+
+cv2.imshow('prev', img)
 
 # destroys img if not copied
 cnts = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
