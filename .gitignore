@@ -10,3 +10,4 @@ tt
 startup.time.txt
 stills-*/
 stills/
+__pycache__/
