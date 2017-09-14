@@ -223,6 +223,6 @@ def get_contents(imagepath):
 
     # step 6: get contents of inner rectangles (boxes)
     boxes = get_inner_rect_contents(contours, img)
-    return boxes
+    return boxes, contours
     
 
