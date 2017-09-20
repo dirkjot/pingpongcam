@@ -163,11 +163,14 @@ if LIVENOTEBOOK:
 
 def get_inner_rect_contents(contours, image):
     """for each inner rectangle in 'contours', extract a standard size rectange with 
-    the (masked) contents of this rectangle from 'image'.  Returns a list of cropped images. """
+    the (masked) contents of this rectangle from 'image'.  
+    Returns a list of cropped images and a list of original contours translated to 
+    those images. """
 
     # determine size of largest (topmost) bounding box
     _,_,bbw,bbh = cv2.boundingRect(contours[0])
     boxes = []
+    translated_contours = []
     kernel =  np.ones((5,5), np.uint8)
     for contour in contours:
         # compute mask from contour by filling
@@ -184,7 +187,8 @@ def get_inner_rect_contents(contours, image):
         assert bbw >= w and bbh >= h, "all boxes should be smaller than the top one"
         box = box[bby:(bby+bbh), bbx:(bbx+bbw), :]
         boxes.append(box)
-    return boxes
+        translated_contours.append(contour - np.array([bby, bbx]))
+    return boxes, translated_contours
     
 # step 6: get contents of inner rectangles (boxes)
 if LIVENOTEBOOK:
@@ -205,11 +209,11 @@ def get_contents(imagepath):
     bluewhite[mask==0,:] = (255,255,255)
     
     # step 2 :extract raw contours
-    dst = np.zeros(img.shape, np.uint8)
-    dst[:]=(240,240,240)
+    #dst = np.zeros(img.shape, np.uint8)
+    #dst[:]=(240,240,240)
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
     print("Found %d outer contours" % len(cnts))
-    cv2.drawContours(dst, cnts, -1, (0,255,0), 3)
+    #cv2.drawContours(dst, cnts, -1, (0,255,0), 3)
     
     # step 3: get outer rectangle
     (outerRectangle, filledMask) = find_outer_rect(cnts, img)
@@ -222,7 +226,7 @@ def get_contents(imagepath):
     assert len(contours) == 4, "Expected four inner rectangles, found %d " % len(contours)
 
     # step 6: get contents of inner rectangles (boxes)
-    boxes = get_inner_rect_contents(contours, img)
+    boxes, contours = get_inner_rect_contents(contours, img)
     return boxes, contours
     
 
