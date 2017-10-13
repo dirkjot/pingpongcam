@@ -169,6 +169,8 @@ def order_points(pts):
     return rect
 
 def four_point_transform(image, pts, wh):
+    """Given a source image and a list of 4 contour points, return a perspective warped image
+    of dimension WxH"""
     rect = order_points(pts)
     
     if not wh:
@@ -195,6 +197,11 @@ def four_point_transform(image, pts, wh):
     return warped, wh
 
 
+# In[77]:
+
+imshow(four_point_transform(bluewhite, outerRectangle, (400,555))[0])
+
+
 # In[12]:
 
 class Box(object):
@@ -205,7 +212,7 @@ class Box(object):
         return "Box< %r >" % self.__dict__
 
 
-# In[22]:
+# In[88]:
 
 # TODO this all assumes the first box is the largest one, which we don't test or ensure
 
@@ -225,7 +232,7 @@ def get_inner_rect_contents(contours, image):
         peri = cv2.arcLength(contour, True)  # approximate such that points are never > 0.05*perimeter away
         approx = cv2.approxPolyDP(contour, 0.05 * peri, True)
         # create white box and copy image in where mask is true
-        box = Box(img=np.zeros_like(image), perimeter=peri, contour=contour)  # TODO enlarge image here
+        box = Box(img=np.zeros_like(image), perimeter=peri, contour=contour, approx=approx)  
         box.img.fill(255)
         box.img[mask == 255] = image[mask == 255] 
         # find simpler contour
@@ -280,7 +287,7 @@ def get_contents(imagepath):
 # contents have changed _and_ whether the box is empty or not.
 # 
 
-# In[24]:
+# In[90]:
 
 # we have this nice code for shrinking contours but it not necessary anymore...
 h,w = boxes[0].img.shape[:2]
@@ -336,7 +343,7 @@ tt[20:66,-60:-10] = namemissing
 plt.imshow(tt, cmap="gray")
 
 
-# In[73]:
+# In[91]:
 
 namefound = cv2.cvtColor(cv2.imread('./namefound50.png'), cv2.COLOR_BGR2GRAY)
 namemissing = cv2.cvtColor(cv2.imread('./namemissing50.png'), cv2.COLOR_BGR2GRAY)
@@ -366,14 +373,20 @@ if LIVENOTEBOOK:
     
 
 
-# In[ ]:
+# In[100]:
 
-print ([cv2.contourArea(x) for x in cnts])
+bluestraight = four_point_transform(bluewhite, outerRectangle, (480,550))[0]
+bluestraight[30:(30+80),26:(26+415)] = boxes[0].contentdetection
+bluestraight[180:(180+80),26:(26+415)] = boxes[1].contentdetection
+bluestraight[290:(290+80),26:(26+415)] = boxes[2].contentdetection
+bluestraight[430:(430+80),26:(26+415)] = boxes[3].contentdetection
+
+imshow(bluestraight)
 
 
-# In[ ]:
+# In[94]:
 
-
+boxes[0].approx
 
 
 # In[ ]:
