@@ -192,7 +192,7 @@ def get_inner_rect_contents(contours, image):
     
 # step 6: get contents of inner rectangles (boxes)
 if LIVENOTEBOOK:
-    boxes = get_inner_rect_contents(contours, img)
+    boxes,_ = get_inner_rect_contents(contours, img)
     imshow(np.concatenate(boxes))
 
 
