@@ -13,6 +13,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+import time
+
 
 def imshow(img):
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
@@ -206,17 +208,61 @@ classify_boxes = Classify_Boxes().run
 
 
 
-def pirate(imagepath):
+def humantime(seconds):
+    "Convert a number of second into a human readable --3 minutes ago-- style format"
+    if seconds < 60:
+        return "just now"
+    elif seconds < 50*60:
+        return "%d minutes ago" % (seconds // 60)
+    else:
+        return "long ago"
+
+
+def addTimeIndicators(boxes, prevboxes=None):
+    """
+    Add time indicators (x minutes ago) for each box.  Returns and modifies 'boxes' in place.
+    """
+    now = time.monotonic()  # fractional seconds clock guaranteed to always go forward
+    if prevboxes is None:
+        prevboxes = [ Box(secondstamp=now - x*60) for x in range(4) ]
+    for box, prevbox in zip(boxes, prevboxes):
+        if box.hascontent and prevbox.hascontent:
+            box.secondstamp = prevbox.secondstamp
+            box.indicator = humantime(box.secondstamp-now)
+        else:
+            box.indicator = ""
+    return boxes
+
+
+def reconstruct(boxes, background):
+    """
+    Given a 'background' image of the blue grid, add the 4 boxes as overlays
+
+    NOTE This hardcodes the size of the final image and depends on the also
+    hardcoded sizes of the boxes.
+
+    """
+    bluestraight = four_point_transform(background.image, background.contour, (480, 550))
+    bluestraight[30:(30 + 80), 26:(26 + 415)] = boxes[0].contentdetection
+    bluestraight[180:(180 + 80), 26:(26 + 415)] = boxes[1].contentdetection
+    bluestraight[290:(290 + 80), 26:(26 + 415)] = boxes[2].contentdetection
+    bluestraight[430:(430 + 80), 26:(26 + 415)] = boxes[3].contentdetection
+    return bluestraight
+
+
+def pirate(imagepath, prevboxes=None):
     """
     Return a reconstructed, perspective warped and annotated version of the blue grid.
     """
     img = cv2.imread(imagepath)
+
 
     # step 1, extract the right kind of blue
     # image = img
     mask = tightbluemask(img)
     bluewhite = img.copy()
     bluewhite[mask == 0, :] = (255, 255, 255)
+    bluewhite = Box(image=bluewhite)
 
     # step 2 :extract raw contours
     dst = np.zeros(img.shape, np.uint8)
@@ -227,6 +273,7 @@ def pirate(imagepath):
 
     # step 3: get outer rectangle
     (outerRectangle, filledMask) = find_outer_rect(cnts, img)
+    bluewhite.contour = outerRectangle
 
     # step 4: remove area outside of outer rectangle from mask (ie set to 0)
     mask[filledMask[:, :, 0] > 0] = 0
@@ -241,12 +288,11 @@ def pirate(imagepath):
     # step 7: classify
     classify_boxes(boxes)
 
-    # step 8: reconstruct image
-    bluestraight = four_point_transform(bluewhite, outerRectangle, (480, 550))
-    bluestraight[30:(30 + 80), 26:(26 + 415)] = boxes[0].contentdetection
-    bluestraight[180:(180 + 80), 26:(26 + 415)] = boxes[1].contentdetection
-    bluestraight[290:(290 + 80), 26:(26 + 415)] = boxes[2].contentdetection
-    bluestraight[430:(430 + 80), 26:(26 + 415)] = boxes[3].contentdetection
+    # step 8: timestamps
+    addTimeIndicators(boxes, prevboxes)
+
+    # step 9: reconstruct image
+    bluestraight = reconstruct(boxes, bluewhite)
 
     return bluestraight
 
