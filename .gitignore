@@ -11,3 +11,5 @@ startup.time.txt
 stills-*/
 stills/
 __pycache__/
+venv/
+

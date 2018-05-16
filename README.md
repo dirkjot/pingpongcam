@@ -11,6 +11,8 @@ This may install some extra stuff, I have not optimized this yet.  I ran this wi
 
 ```
 brew install gstreamer
+brew install gst-libav 
+brew install gst-plugins-base --with-opencv  # just guessing
 brew install  gst-plugins-good  --with-jpeg --with-libdv --with-check --with-gdk-pixbuf
 brew install gst-plugins-bad --with-opencv --with-rtmpdump
 brew install gst-plugins-ugly --with-x264 --with-libshout --with-dirac 
@@ -31,4 +33,13 @@ cp -R node_modules /usr/local/Cellar/nginx/1.10.3/html/
 # then run the script
 ./config/gstreamer.sh
 
+```
+
+
+
+Software to install on MacOS:
+```bash
+brew install ipython
+pip3 install jupyter matplotlib scikit-image
+brew install pygobject3 --with-python@2 gtk+3
 ```
