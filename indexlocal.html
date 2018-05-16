@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="refresh" content="600" />
+<title>PingPongCam STILLS</title>
+<style>
+    body {
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+	background-color: #2A271F;;
+    }
+    video {
+        width: 100%;
+    }
+</style>
+</head>
+<body>
+
+<script src="hlsjs/hls.light.min.js"></script>
+<video id="video" controls></video>
+<script>
+  if(Hls.isSupported()) {
+    var video = document.getElementById('video');
+    var hls = new Hls();
+    hls.loadSource('stills/playlist.m3u8');
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,function() {
+      video.play();
+  });
+ } 
+ else { 
+   console.log('HLS not supported '); 
+ }
+</script>
+
+
+
+
+</body>
+</html>
