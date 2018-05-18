@@ -196,6 +196,7 @@ class Classify_Boxes(object):
             if b.hascontent:
                 color = (255, 0, 0)
                 icon = self.namefound
+                b.secondstamp = time.monotonic()
             else:
                 color = (0, 0, 255)
                 icon = self.namemissing
@@ -224,10 +225,11 @@ def addTimeIndicators(boxes, prevboxes=None):
     """
     now = time.monotonic()  # fractional seconds clock guaranteed to always go forward
     if prevboxes is None:
-        prevboxes = [ Box(secondstamp=now - x*60) for x in range(4) ]
+        prevboxes = [ Box(secondstamp=now - x*60, hascontent=False) for x in range(4) ]
     for box, prevbox in zip(boxes, prevboxes):
-        if box.hascontent and prevbox.hascontent:
-            box.secondstamp = prevbox.secondstamp
+        if box.hascontent:
+            if prevbox.hascontent:
+                box.secondstamp = prevbox.secondstamp
             box.indicator = humantime(box.secondstamp-now)
         else:
             box.indicator = ""
@@ -250,29 +252,28 @@ def reconstruct(boxes, background):
     return bluestraight
 
 
-def pirate(imagepath, prevboxes=None):
+def annotate(image, prevboxes=None):
     """
-    Return a reconstructed, perspective warped and annotated version of the blue grid.
+    Return a reconstructed, perspective warped and annotated version of the incoming picture.
     """
-    img = cv2.imread(imagepath)
-
+    if isinstance(image, str):
+        image = cv2.imread(image)
 
     # step 1, extract the right kind of blue
-    # image = img
-    mask = tightbluemask(img)
-    bluewhite = img.copy()
+    mask = tightbluemask(image)
+    bluewhite = image.copy()
     bluewhite[mask == 0, :] = (255, 255, 255)
     bluewhite = Box(image=bluewhite)
 
-    # step 2 :extract raw contours
-    dst = np.zeros(img.shape, np.uint8)
+    # step 2: extract raw contours
+    dst = np.zeros(image.shape, np.uint8)
     dst[:] = (240, 240, 240)
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
     print("Found %d outer contours" % len(cnts))
     cv2.drawContours(dst, cnts, -1, (0, 255, 0), 3)
 
     # step 3: get outer rectangle
-    (outerRectangle, filledMask) = find_outer_rect(cnts, img)
+    (outerRectangle, filledMask) = find_outer_rect(cnts, image)
     bluewhite.contour = outerRectangle
 
     # step 4: remove area outside of outer rectangle from mask (ie set to 0)
@@ -283,7 +284,7 @@ def pirate(imagepath, prevboxes=None):
     assert len(contours) == 4, "Expected four inner rectangles, found %d " % len(contours)
 
     # step 6: get contents of inner rectangles (boxes)
-    boxes = get_inner_rect_contents(contours, img)
+    boxes = get_inner_rect_contents(contours, image)
 
     # step 7: classify
     classify_boxes(boxes)
@@ -291,10 +292,14 @@ def pirate(imagepath, prevboxes=None):
     # step 8: timestamps
     addTimeIndicators(boxes, prevboxes)
 
+    return boxes[0].image, None
+
     # step 9: reconstruct image
     bluestraight = reconstruct(boxes, bluewhite)
 
-    return bluestraight
+    print("Update " + "-".join([b.indicator for b in boxes ]))
+
+    return bluestraight, boxes
 
 
 

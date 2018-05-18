@@ -52,7 +52,7 @@ web browser, than point it to the `stills/playlist.m3u8` file.  If the browser c
 
 #### Confirm GStreamer support in OpenCV
 
-```bash
+```
 $ python3 -c "import cv2; print(cv2.getBuildInformation())" | grep -A6 -i gstreamer
 
     GStreamer:

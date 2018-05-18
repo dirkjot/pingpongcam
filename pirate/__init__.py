@@ -1,2 +1,3 @@
-from .pirate_main import *
+
+from .pipeline import pipeline
 
