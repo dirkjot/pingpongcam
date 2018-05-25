@@ -8,6 +8,9 @@ import sys
 
 
 
+bomb = cv2.imread("pirate/boom800.png")
+bomb_counter = 1
+framerate = "1/2" # 1 frame every 2 seconds
 
 def check_supported_versions():
     if not sys.version_info.major == 3:
@@ -31,13 +34,13 @@ def get_livestream(frame=None):
         # backend.  https://docs.opencv.org/3.3.0/dd/d9e/classcv_1_1VideoWriter.html
         # Obviously, need to build opencv with Gstreamer support for this to work.
 
-        livestream = cv2.VideoWriter('appsrc ! videorate ! videoconvert !  video/x-raw ,  framerate=1/1 ' 
+        livestream = cv2.VideoWriter('appsrc ! videorate ! videoconvert !  video/x-raw ,  framerate=%s ' % framerate +
                                         ' ! videoconvert ! videorate   ! textoverlay text="vC" valignment=top halignment=right font-desc="Sans, 36" ' 
                                         ' ! clockoverlay ! x264enc tune=zerolatency ! mpegtsmux ! hlssink max-files=5 async-handling=true target-duration=5 '
                                         ' playlist-location="stills/playlist.m3u8"  location="stills/segment%05d.ts"',
                                         cv2.CAP_GSTREAMER, fourcc, 1.0, framesize)
 
-        livestream = cv2.VideoWriter('appsrc ! videorate ! videoconvert ! video/x-raw, framerate=1/1 ! timeoverlay ! osxvideosink ',
+        livestream = cv2.VideoWriter('appsrc ! videorate ! videoconvert ! video/x-raw, framerate=%s ! timeoverlay ! osxvideosink ' % framerate,
                                      cv2.CAP_GSTREAMER, fourcc, 1.0, framesize)
 
         _livestream = livestream
@@ -45,7 +48,7 @@ def get_livestream(frame=None):
 
 
 
-def pipeline(simulate=False, camera_number=0):
+def pipeline(simulate=False, camera_number=0, loop=10):
     """
 
     :param simulate: Use stills from 'stills/frame%3d.png' instead of camera input
@@ -59,17 +62,24 @@ def pipeline(simulate=False, camera_number=0):
     check_supported_versions()
     prevState = None
     livestream = None
+    then = time.monotonic()
+
 
     if not simulate:
         camera_capture = cv2.VideoCapture(
-            "avfvideosrc device-index=%d ! videorate ! videoconvert !  video/x-raw ,  framerate=1/1   !  appsink" % camera_number)
+            "avfvideosrc device-index=%d ! videorate ! videoconvert ! videoscale !  video/x-raw, framerate=%s, width=800, height=600   !  appsink" % (
+                camera_number, framerate))
     else:
         camera_capture = cv2.VideoCapture(
-            'multifilesrc location="stills/frame%3d.png" start-index=300 stop-index=900 loop=TRUE caps="image/png,framerate=1/1'
-            ' ! pngdec ! videorate ! videoconvert !  video/x-raw ,  framerate=1/1   !  appsink')
+            'multifilesrc location="stills/frame%%3d.png" start-index=100 stop-index=600 loop=TRUE caps="image/png,framerate=%s' % framerate +
+            ' ! pngdec ! videorate ! videoconvert !  video/x-raw ,  framerate=%s   !  appsink' % framerate)
 
     try:
-        for i in range(100):
+        for i in range(loop):
+            now = time.monotonic()
+            print("TIME ELAPSED", now-then)
+            then = now
+
             ret, frame = camera_capture.read()
             if not ret:
                 print("Camera not ready, sleeping")
@@ -77,9 +87,18 @@ def pipeline(simulate=False, camera_number=0):
             else:
                 if not livestream:
                     livestream = get_livestream(frame)
-                frame, prevState = annotate(frame, prevState)
-                livestream.write(frame)
+                try:
+                    frame, prevState = annotate(frame, prevState)
+                    livestream.write(frame)
+                except ValueError as e:
+                    global bomb_counter
+                    print("Could not parse frame (bomb%04d.png)" % bomb_counter, e)
+                    livestream.write(bomb)
+                    cv2.imwrite("stills/bomb%04d.png" % bomb_counter, frame)
+                    bomb_counter += 1
+
     except KeyboardInterrupt:
+        print("Keyboard interrupt detected")
         pass
 
 

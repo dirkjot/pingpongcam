@@ -20,7 +20,7 @@ def imshow(img):
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
 
-def tightbluemask(image, clean=True):
+def tightbluemask(image):
     """
     Detect the blue grid that we use to write names in.  Returns a mask (grayscale image) which is >0 in the area
     of the blue grid.
@@ -37,24 +37,43 @@ def tightbluemask(image, clean=True):
     # remove speckles
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-    return mask
+
+    # TODO optimize by removing copy
+    bluewhite = image.copy()
+    bluewhite[mask == 0, :] = (255, 255, 255)
+    bluewhite = Box(image=bluewhite)
+
+    return mask, bluewhite
+
+
+#
+def extract_raw_contours(image, mask):
+    dst = np.zeros(image.shape, np.uint8)
+    dst[:] = (240, 240, 240)
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
+    print("Found %d outer contours" % len(cnts))
+    cv2.drawContours(dst, cnts, -1, (0, 255, 0), 3)
+    return dst, cnts
 
 
 # simplify contours, find one that is a rectangle
-def find_outer_rect(cnts, img=None):
+def find_outer_rect(cnts, img=None, mask=None):
     """
     Find the one large rectangle in a list of contours, returns an approximated contour
     and optionally an image of the contour.  The one large rectangle is the outside of our blue grid.
 
     If an optional image is passed, this routine will return a filled 3-channel image of the found contour.
     In channel 0, the area inside the outer rect is 0, 255 elsewhere.
+
+    If a mask is not None, its contents will be adjust so that any mask areas outside of the out rect will be clipped.
+
     """
 
     if not img is None:
-        dst = np.zeros(img.shape, np.uint8)
-        dst[:] = (255, 240, 240)
+        filledMask = np.zeros(img.shape, np.uint8)
+        filledMask[:] = (255, 240, 240)
     else:
-        dst = None
+        filledMask = None
     for c in cnts:
         peri = 0.01 * cv2.arcLength(c, True)  # approximate such that points are never > 0.01*perimeter away
         approx = cv2.approxPolyDP(c, peri, True)
@@ -66,13 +85,15 @@ def find_outer_rect(cnts, img=None):
             if xsize > 300 and ysize > 150:
                 print ("-- Found: %d x %d" % (xsize, ysize))
                 if not img is None:
-                    cv2.drawContours(dst, [approx], -1, (0, 255, 0), cv2.FILLED)
+                    cv2.drawContours(filledMask, [approx], -1, (0, 255, 0), cv2.FILLED)
                 break
             else:
                 print ("-- Rejected rectangle: %d x %d" % (xsize, ysize))
     else:
         raise ValueError("No outer rectangle found")
-    return approx, dst
+    if img is not None and mask is not None:
+        mask[filledMask[:, :, 0] > 0] = 0
+    return approx, mask
 
 
 
@@ -244,11 +265,19 @@ def reconstruct(boxes, background):
     hardcoded sizes of the boxes.
 
     """
+
+    finalsize = (800,600) # w by h
+
     bluestraight = four_point_transform(background.image, background.contour, (480, 550))
     bluestraight[30:(30 + 80), 26:(26 + 415)] = boxes[0].contentdetection
     bluestraight[180:(180 + 80), 26:(26 + 415)] = boxes[1].contentdetection
     bluestraight[290:(290 + 80), 26:(26 + 415)] = boxes[2].contentdetection
     bluestraight[430:(430 + 80), 26:(26 + 415)] = boxes[3].contentdetection
+
+    bottompad = finalsize[0] - bluestraight.shape[1]
+    rightpad = finalsize[1] - bluestraight.shape[0]
+    bluestraight = np.pad(bluestraight, ((0, rightpad), (0, bottompad), (0, 0)), 'constant', constant_values=200)
+
     return bluestraight
 
 
@@ -260,24 +289,16 @@ def annotate(image, prevboxes=None):
         image = cv2.imread(image)
 
     # step 1, extract the right kind of blue
-    mask = tightbluemask(image)
-    bluewhite = image.copy()
-    bluewhite[mask == 0, :] = (255, 255, 255)
-    bluewhite = Box(image=bluewhite)
+    mask, bluewhite = tightbluemask(image)
 
     # step 2: extract raw contours
-    dst = np.zeros(image.shape, np.uint8)
-    dst[:] = (240, 240, 240)
-    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[1]
-    print("Found %d outer contours" % len(cnts))
-    cv2.drawContours(dst, cnts, -1, (0, 255, 0), 3)
+    dst, cnts = extract_raw_contours(image, mask)
 
     # step 3: get outer rectangle
-    (outerRectangle, filledMask) = find_outer_rect(cnts, image)
-    bluewhite.contour = outerRectangle
+    (bluewhite.contour, mask) = find_outer_rect(cnts, image, mask)
 
     # step 4: remove area outside of outer rectangle from mask (ie set to 0)
-    mask[filledMask[:, :, 0] > 0] = 0
+    # now inside 3
 
     # step 5: find inner rectangles
     contours, hier = find_inner_rectangles(mask)
@@ -291,8 +312,6 @@ def annotate(image, prevboxes=None):
 
     # step 8: timestamps
     addTimeIndicators(boxes, prevboxes)
-
-    return boxes[0].image, None
 
     # step 9: reconstruct image
     bluestraight = reconstruct(boxes, bluewhite)
