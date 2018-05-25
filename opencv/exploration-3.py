@@ -11,6 +11,7 @@
 
 # In[1]:
 
+
 LIVENOTEBOOK = True
 import cv2
 cv2.__version__
@@ -20,6 +21,7 @@ get_contents = extract_blue_grid.get_contents
 
 # In[2]:
 
+
 def get_content1(imagepath):
     "return 2nd box and contour from get_contents"
     boxes, contours = get_contents(imagepath)
@@ -27,6 +29,7 @@ def get_content1(imagepath):
 
 
 # In[3]:
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -39,12 +42,13 @@ imempty = cv2.imread("../reference/frame272.png")
 
 
 if LIVENOTEBOOK:
-    get_ipython().magic(u'matplotlib inline')
+    get_ipython().run_line_magic('matplotlib', 'inline')
     # test plotting
     imshow(np.concatenate([imwriting1,imwriting2,imempty], axis=1))
 
 
 # In[ ]:
+
 
 # not used:
 def threshold_boxes(boxes):
@@ -59,7 +63,8 @@ def threshold_boxes(boxes):
 
 # In[4]:
 
-get_ipython().magic(u'matplotlib inline')
+
+get_ipython().run_line_magic('matplotlib', 'inline')
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
 
 writing1,contours1 = get_content1("../reference/frame276.png")
@@ -86,6 +91,7 @@ plt.imshow(np.concatenate([writing1,writing2,empty]))
 
 # In[5]:
 
+
 writingb, contoursb = get_content1("../reference/frame274.png")
 writingb = cv2.morphologyEx(writingb, cv2.MORPH_OPEN, kernel)
 writingb = cv2.cvtColor(writingb, cv2.COLOR_BGR2GRAY)
@@ -98,6 +104,7 @@ plt.imshow(np.concatenate([writing1,writingb,writingc]))
 
 
 # In[6]:
+
 
 # matching does not work on a whole image: it looks like it does:
 img = writing1.copy()
@@ -114,6 +121,7 @@ plt.imshow(img)
 
 # In[ ]:
 
+
 # but it another word too
 img = writing2.copy()
 method = cv2.TM_SQDIFF
@@ -128,6 +136,7 @@ plt.imshow(img)
 
 
 # In[ ]:
+
 
 # and it matches empty just as well..
 img = empty.copy()
@@ -156,12 +165,14 @@ plt.imshow(img)
 
 # In[7]:
 
+
 template = cv2.imread('template.png')  # used gimp to cut it 
 template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 plt.imshow(template)
 
 
 # In[ ]:
+
 
 def frame_img(img, dim):
     "put image in a black frame so resulting image has shape dim"
@@ -198,6 +209,7 @@ value
 
 # In[ ]:
 
+
 # for SQDIFF this one scored quite high, with COEFF_NORMED it is fine.
 value, _ = locate_template(writingb, template)
 "value %2.2e" % value
@@ -205,17 +217,20 @@ value, _ = locate_template(writingb, template)
 
 # In[ ]:
 
+
 value, _ = locate_template(writingc, template)
 "value %2.2e" % value
 
 
 # In[ ]:
 
+
 value, _ = locate_template(writing2, template)
 "value %2.2e" % value
 
 
 # In[ ]:
+
 
 value, _ = locate_template(empty, template)
 "value %2.2e" % value
@@ -225,10 +240,12 @@ value, _ = locate_template(empty, template)
 
 # In[8]:
 
+
 contours1.shape # shape of box shown in writing1
 
 
 # In[9]:
+
 
 def scale_contour(contour, scale):
     "Shrinks or grows a contour by the given factor"
@@ -243,6 +260,7 @@ def scale_contour(contour, scale):
 
 
 # In[14]:
+
 
 c = contours1
 dst = np.dstack([writing1.copy(), np.zeros_like(writing1), np.zeros_like(writing1)])
@@ -260,33 +278,9 @@ template1 =
 
 
 
-
-# In[ ]:
-
-
 img = np.zeros((141, 390,3), dtype=np.uint8)
 
 img[:]=(240,240,240)
 cv2.drawContours(img, [contours1], -1, (8,255,5), 3)
 imshow(img)
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
 

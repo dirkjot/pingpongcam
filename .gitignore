@@ -12,4 +12,6 @@ stills-*/
 stills/
 __pycache__/
 venv/
+reference/*-step*
+*.log
 

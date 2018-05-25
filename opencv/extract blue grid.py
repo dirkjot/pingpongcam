@@ -3,18 +3,20 @@
 
 # In[1]:
 
+
 LIVENOTEBOOK = False
 import cv2
 cv2.__version__
 
 
-
 # In[2]:
+
 
 LIVENOTEBOOK = True
 
 
 # In[3]:
+
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,13 +24,14 @@ from skimage.measure import compare_ssim
 def imshow(img):  plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     
 if LIVENOTEBOOK:
-    get_ipython().magic(u'matplotlib inline')
+    get_ipython().run_line_magic('matplotlib', 'inline')
     img = cv2.imread("../reference/frame17978.png")
     # test plotting
     imshow(img)
 
 
 # In[4]:
+
 
 def tightbluemask(image, clean=True):
     """Returns a mask (grayscale image) which is >0 in the area of the blue grid."""
@@ -47,8 +50,8 @@ def tightbluemask(image, clean=True):
     return mask
 
 
-
 # In[5]:
+
 
 # step 1, extract the right kind of blue
 if LIVENOTEBOOK:
@@ -61,6 +64,7 @@ if LIVENOTEBOOK:
 
 # In[6]:
 
+
 # step 2 :extract raw contours
 if LIVENOTEBOOK:
     dst = np.zeros(image.shape, np.uint8)
@@ -72,6 +76,7 @@ if LIVENOTEBOOK:
 
 
 # In[7]:
+
 
 # simplify contours, find one that is a rectangle
 def find_outer_rect(cnts, img=None):
@@ -113,6 +118,7 @@ if LIVENOTEBOOK:
 
 # In[8]:
 
+
 # step 4: remove area outside of outer rectangle from mask (ie set to 0)
 if LIVENOTEBOOK:
     mask[filledMask[:,:,0]>0]=0
@@ -120,6 +126,7 @@ if LIVENOTEBOOK:
 
 
 # In[9]:
+
 
 def find_inner_rectangles(img):
     # find inner rectangles
@@ -151,10 +158,12 @@ if LIVENOTEBOOK:
 
 # In[10]:
 
+
 hier
 
 
 # In[11]:
+
 
 # http://www.pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/
 
@@ -199,10 +208,12 @@ def four_point_transform(image, pts, wh):
 
 # In[77]:
 
+
 imshow(four_point_transform(bluewhite, outerRectangle, (400,555))[0])
 
 
 # In[12]:
+
 
 class Box(object):
     "data class for image of the four squares (boxes) on our white board"
@@ -213,6 +224,7 @@ class Box(object):
 
 
 # In[88]:
+
 
 # TODO this all assumes the first box is the largest one, which we don't test or ensure
 
@@ -249,6 +261,7 @@ if LIVENOTEBOOK:
 
 
 # In[23]:
+
 
 def get_contents(imagepath):
     img = cv2.imread(imagepath)
@@ -289,6 +302,7 @@ def get_contents(imagepath):
 
 # In[90]:
 
+
 # we have this nice code for shrinking contours but it not necessary anymore...
 h,w = boxes[0].img.shape[:2]
 for box in boxes:
@@ -299,6 +313,7 @@ plt.imshow(np.concatenate([x.template for x in boxes]), cmap="gray")
 
 # In[25]:
 
+
 [ x.template.shape for x in boxes ]
 
 
@@ -307,7 +322,9 @@ plt.imshow(np.concatenate([x.template for x in boxes]), cmap="gray")
 
 
 
+
 # In[27]:
+
 
 tt = boxes[1].template
 tt = cv2.Canny(tt,10,200)
@@ -317,6 +334,7 @@ plt.imshow(tt, cmap="gray")
 
 # In[52]:
 
+
 namefound = cv2.cvtColor(cv2.imread('./namefound50.png'), cv2.COLOR_BGR2GRAY)
 namemissing = cv2.cvtColor(cv2.imread('./namemissing50.png'), cv2.COLOR_BGR2GRAY)
 print(namefound.shape, namemissing.shape)
@@ -324,6 +342,7 @@ plt.imshow(namemissing, cmap="gray")
 
 
 # In[53]:
+
 
 # using Otsu binarization, assumes histo with two peaks (white-black)
 tt = boxes[1].template
@@ -335,6 +354,7 @@ plt.imshow(tt, cmap="gray")
 
 # In[54]:
 
+
 # using adaptive thresholding
 tt = boxes[1].template
 blur = cv2.GaussianBlur(tt, (5,5), 0)
@@ -344,6 +364,7 @@ plt.imshow(tt, cmap="gray")
 
 
 # In[91]:
+
 
 namefound = cv2.cvtColor(cv2.imread('./namefound50.png'), cv2.COLOR_BGR2GRAY)
 namemissing = cv2.cvtColor(cv2.imread('./namemissing50.png'), cv2.COLOR_BGR2GRAY)
@@ -375,6 +396,7 @@ if LIVENOTEBOOK:
 
 # In[100]:
 
+
 bluestraight = four_point_transform(bluewhite, outerRectangle, (480,550))[0]
 bluestraight[30:(30+80),26:(26+415)] = boxes[0].contentdetection
 bluestraight[180:(180+80),26:(26+415)] = boxes[1].contentdetection
@@ -386,25 +408,6 @@ imshow(bluestraight)
 
 # In[94]:
 
+
 boxes[0].approx
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
-
-
 

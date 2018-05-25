@@ -5,6 +5,7 @@
 
 
 
+# coding: utf-8
 
 # In[1]:
 
@@ -32,8 +33,8 @@ def imshow(img):
 imshow(img)
 
 
-
 # In[43]:
+
 
 def showboxes(imagename):
     img = image = cv2.imread(imagename)
@@ -197,8 +198,8 @@ def showboxes(imagename):
 
 
 
-
 # In[44]:
+
 
 import glob, sys
 for fn in glob.glob("stills-thu/frame*png"): 
@@ -213,6 +214,7 @@ for fn in glob.glob("stills-thu/frame*png"):
 
 # In[45]:
 
+
 try:
     assert 1==0, "failed that"
 except Exception as e:
@@ -220,6 +222,7 @@ except Exception as e:
 
 
 # In[8]:
+
 
 cv2.imread("frame1.png")
 

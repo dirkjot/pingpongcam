@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="183709aa-8290-4a04-93f0-30f444acd0e8" name="Default" comment="Add Gstreamer documentation, incl. local streaming to HLS&#10;&#10;- created 'indexlocal.html', for local development&#10;- 'stream-to-hls.py' script will stream from camera to HLS&#10;- also commit package-lock.json file">
-      <change afterPath="$PROJECT_DIR$/pirate/boom800.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pirate/annotate-stepwise.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/pirate/annotate-stepwise.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pirate/annotate.py" beforeDir="false" afterPath="$PROJECT_DIR$/pirate/annotate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pirate/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/pirate/pipeline.py" afterDir="false" />
+    <list default="true" id="183709aa-8290-4a04-93f0-30f444acd0e8" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/convert-all-notebooks.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,7 +15,7 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="annotate.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="annotate.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/pirate/annotate.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="528">
@@ -27,6 +23,15 @@
                   <folding>
                     <element signature="e#113#123#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="240">
+                  <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
                 </state>
               </provider>
             </entry>
@@ -61,8 +66,8 @@
           <file leaf-file-name="extract blue grid.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/opencv/extract blue grid.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="5385">
-                  <caret line="359" column="19" selection-start-line="359" selection-start-column="9" selection-end-line="359" selection-end-column="19" />
+                <state relative-caret-position="5700">
+                  <caret line="380" column="19" selection-start-line="380" selection-start-column="19" selection-end-line="380" selection-end-column="19" />
                 </state>
               </provider>
             </entry>
@@ -168,7 +173,6 @@
         <option value="$PROJECT_DIR$/pythonpipeline/identity.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/pythonpipeline/grabcam.py" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/stills/index.html" />
         <option value="$PROJECT_DIR$/index2.html" />
         <option value="$PROJECT_DIR$/pythonpipeline/stream-to-osxvideo.py" />
@@ -178,6 +182,7 @@
         <option value="$PROJECT_DIR$/pythonpipeline/stream-from-images.py" />
         <option value="$PROJECT_DIR$/pirate/pipeline.py" />
         <option value="$PROJECT_DIR$/pirate/annotate.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -242,6 +247,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value=".giti&#9;FILE&#9;file:///Users/pivotal/workspace/pingpongcam/.gitignore" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -320,7 +326,21 @@
       <option name="project" value="LOCAL" />
       <updated>1526578394592</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed size issue in pirate pipeline&#10;&#10;- added first testing">
+      <created>1527284260852</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1527284260852</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update generated python files and .gitignore&#10;&#10;- Added new convert-all-notebooks.sh script, which should be ran before &#10;  committing.">
+      <created>1527284558918</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1527284558918</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -363,7 +383,9 @@
     <MESSAGE value="Work on integrating opencv and gstreamer pipelines in python&#10;&#10;Chosen solution is to have opencv/python be the main executable,&#10;it invokes 2 gstreamer pipelines via VideoCapture and VideoWriter" />
     <MESSAGE value="Add Gstreamer documentation, incl. local streaming to HLS&#10;&#10;- created 'indexlocal.html', for local development&#10;- also commit package-lock.json file" />
     <MESSAGE value="Add Gstreamer documentation, incl. local streaming to HLS&#10;&#10;- created 'indexlocal.html', for local development&#10;- 'stream-to-hls.py' script will stream from camera to HLS&#10;- also commit package-lock.json file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Gstreamer documentation, incl. local streaming to HLS&#10;&#10;- created 'indexlocal.html', for local development&#10;- 'stream-to-hls.py' script will stream from camera to HLS&#10;- also commit package-lock.json file" />
+    <MESSAGE value="Fixed size issue in pirate pipeline&#10;&#10;- added first testing" />
+    <MESSAGE value="Update generated python files and .gitignore&#10;&#10;- Added new convert-all-notebooks.sh script, which should be ran before &#10;  committing." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update generated python files and .gitignore&#10;&#10;- Added new convert-all-notebooks.sh script, which should be ran before &#10;  committing." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/pythonpipeline/grabcam.py">
@@ -687,17 +709,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="21" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/opencv/extract blue grid.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5385">
-          <caret line="359" column="19" selection-start-line="359" selection-start-column="9" selection-end-line="359" selection-end-column="19" />
+        <state relative-caret-position="5700">
+          <caret line="380" column="19" selection-start-line="380" selection-start-column="19" selection-end-line="380" selection-end-column="19" />
         </state>
       </provider>
     </entry>
@@ -763,6 +778,13 @@
           <folding>
             <element signature="e#113#123#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
         </state>
       </provider>
     </entry>

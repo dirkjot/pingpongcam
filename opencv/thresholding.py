@@ -13,12 +13,13 @@
 
 # In[2]:
 
+
 import cv2
 cv2.__version__
 
 import numpy as np
 import matplotlib.pyplot as plt
-get_ipython().magic(u'matplotlib inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
 img = cv2.imread("../reference/frame12.png")
 image = img
 # test plotting
@@ -27,6 +28,7 @@ imshow(img)
 
 
 # In[ ]:
+
 
 # threshold HSV image
 # valid blue values measured of an image (use Digital Color Meter)
@@ -39,6 +41,7 @@ cv2.cvtColor(valid, cv2.COLOR_RGB2HSV)
 
 
 # In[3]:
+
 
 def tightbluemask(image, clean=True):
     """Returns a mask (grayscale image) which is >0 in the area of the blue grid."""
@@ -59,6 +62,7 @@ def tightbluemask(image, clean=True):
 
 
 # In[10]:
+
 
 # create nice images for all files in stills-thu , resulting images are placed in: stills-test
 import glob, sys, time, os
@@ -82,6 +86,7 @@ for fn in glob.glob("../stills-thu/frame*png"):
 
 # In[ ]:
 
+
 # bad images
 bad = "stills-thu/frame1057.png stills-thu/frame107.png stills-thu/frame120.png stills-thu/frame17.png stills-thu/frame72.png".split()
 fn = bad[4]
@@ -94,6 +99,7 @@ imshow(img)
 
 # In[ ]:
 
+
 imshow(img)
 conv = tightbluemask(img)
 conv = cv2.cvtColor(conv, cv2.COLOR_GRAY2RGB)
@@ -103,6 +109,7 @@ plt.imshow(conv)
 
 
 # In[ ]:
+
 
 conv = conv[:,:,np.newaxis]
 layer0 = np.zeros_like(conv)

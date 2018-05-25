@@ -5,12 +5,13 @@
 
 # In[1]:
 
+
 import cv2
 cv2.__version__
 
 import numpy as np
 import matplotlib.pyplot as plt
-get_ipython().magic(u'matplotlib inline')
+get_ipython().run_line_magic('matplotlib', 'inline')
 img = cv2.imread("frame12.png")
 image = img
 # test plotting
@@ -19,6 +20,7 @@ imshow(img)
 
 
 # In[15]:
+
 
 # harris corner detection
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -35,6 +37,7 @@ imshow(dst)
 
 # In[33]:
 
+
 # hough lines
 gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray,20,250,apertureSize = 3)
@@ -44,6 +47,7 @@ plt.imshow(img)
 
 
 # In[43]:
+
 
 # thresholding by itself
 img = image
@@ -56,6 +60,7 @@ plt.imshow(th3)
 
 # In[45]:
 
+
 # threshold HSV image
 # valid blue values measured of an image (use Digital Color Meter)
 valid = np.array([15,37,82, 18,50,104, 11,33,74, 21,31,63, 16,40,91, 15,42,92, 11,45,102, 16,32,73, 
@@ -66,6 +71,7 @@ cv2.cvtColor(valid, cv2.COLOR_RGB2HSV)
 
 
 # In[46]:
+
 
 def tightbluemask(image, clean=True):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -85,6 +91,7 @@ def tightbluemask(image, clean=True):
 
 
 # In[4]:
+
 
 # try everywhere
 # %matplotlib osx
@@ -113,6 +120,7 @@ for fn in glob.glob("stills-thu/frame*png"):
 
 # In[51]:
 
+
 import glob, sys, time, os
 os.system("rm stills-thu/*.x.png")
 for fn in glob.glob("stills-thu/frame*png"): 
@@ -132,6 +140,7 @@ for fn in glob.glob("stills-thu/frame*png"):
 
 # In[42]:
 
+
 bad = "stills-thu/frame1057.png stills-thu/frame107.png stills-thu/frame120.png stills-thu/frame17.png stills-thu/frame72.png".split()
 fn = bad[4]
 print(fn)
@@ -143,6 +152,7 @@ imshow(img)
 
 # In[44]:
 
+
 imshow(img)
 conv = tightbluemask(img)
 conv = cv2.cvtColor(conv, cv2.COLOR_GRAY2RGB)
@@ -152,6 +162,7 @@ plt.imshow(conv)
 
 
 # In[25]:
+
 
 conv = conv[:,:,np.newaxis]
 layer0 = np.zeros_like(conv)
