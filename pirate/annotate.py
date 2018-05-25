@@ -20,6 +20,20 @@ def imshow(img):
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
 
+
+
+class Box(object):
+    """
+    Data class for image of the four squares (boxes) on our white board. This is basically a bunch, ie a
+    wrapper around whatever attributes we decide to throw in here.
+    """
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __str__(self):
+        return "Box< %r >" % self.__dict__
+
+
 def tightbluemask(image):
     """
     Detect the blue grid that we use to write names in.  Returns a mask (grayscale image) which is >0 in the area
@@ -156,17 +170,6 @@ def four_point_transform(image, pts, wh):
     warped = cv2.warpPerspective(image, M, wh)
     return warped
 
-
-class Box(object):
-    """
-    Data class for image of the four squares (boxes) on our white board. This is basically a bunch, ie a
-    wrapper around whatever attributes we decide to throw in here.
-    """
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def __str__(self):
-        return "Box< %r >" % self.__dict__
 
 
 
